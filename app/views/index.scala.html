@@ -1,7 +1,25 @@
-@(message: String)
+<!DOCTYPE html>
 
-@main("Welcome to Play") {
+<html>
+    <head>
+        <title>Social aggregator</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("css/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("img/favicon.png")">
 
-    @play20.welcome(message)
 
-}
+        <script>
+        @Html(org.webjars.RequireJS.getSetupJavaScript("/webjars/"))
+        </script>
+
+            <!-- The following can use the WebJars Locator to avoid hard-coding the full path -->
+        <script data-main="/assets/js/home" src="/js/lib/requirejs/2.1.10/require.js"></script>
+    </head>
+    <body>
+        <div id="test">Got it!</div>
+        <div class="row">
+            <button id="showAlert" type="button" class="btn btn-default btn-lg">
+                <span class="glyphicon glyphicon-star"></span> Star
+            </button>
+        </div>
+    </body>
+</html>
