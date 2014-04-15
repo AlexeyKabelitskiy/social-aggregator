@@ -13,7 +13,7 @@
         <script>
         @Html(org.webjars.RequireJS.getSetupJavaScript("/webjars/"))
         </script>
-
+        @helper.requireJs
             <!-- The following can use the WebJars Locator to avoid hard-coding the full path -->
         <script data-main="/assets/js/home" src="/js/lib/requirejs/2.1.11/require.js"></script>
 

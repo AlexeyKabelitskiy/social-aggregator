@@ -4,22 +4,24 @@
     <head>
         <title>Social aggregator</title>
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("css/main.css")">
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.min.css"))'>
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap-theme.min.css"))'>
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("img/favicon.png")">
 
 
         <script>
-        @Html(org.webjars.RequireJS.getSetupJavaScript("/webjars/"))
+        @Html(org.webjars.RequireJS.getSetupJavaScript("/js/lib/"))
         </script>
 
             <!-- The following can use the WebJars Locator to avoid hard-coding the full path -->
         <script data-main="/assets/js/home" src="/js/lib/requirejs/2.1.10/require.js"></script>
     </head>
     <body>
-        <div id="test">Got it!</div>
-        <div class="row">
-            <button id="showAlert" type="button" class="btn btn-default btn-lg">
-                <span class="glyphicon glyphicon-star"></span> Star
-            </button>
-        </div>
+        <ul class="nav nav-pills">
+            <li class="active"><a href="#">Feed</a></li>
+            <li><a href="#">Notifications</a></li>
+            <li><a href="#">Options</a></li>
+        </ul>
+        <div class="row"></div>
     </body>
 </html>
