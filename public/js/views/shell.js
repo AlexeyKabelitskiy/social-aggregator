@@ -3,6 +3,7 @@ define(['require', 'jquery', 'backbonejs','underscorejs','../aggregator'], funct
 
         render: function() {
             this.$el.html(this.template({}));
+            return this;
         },
 
         selectMenuItem: function(menuItem) {
