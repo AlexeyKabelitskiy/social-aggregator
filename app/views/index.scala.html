@@ -1,7 +1,23 @@
-@(message: String)
+<!DOCTYPE html>
 
-@main("Welcome to Play") {
+<html>
+    <head>
+        <title>Social aggregator</title>
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.css"))'>
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap-theme.css"))'>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("css/bootstrap.icon-large.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("css/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("img/favicon.png")">
 
-    @play20.welcome(message)
 
-}
+        <script>
+        @Html(org.webjars.RequireJS.getSetupJavaScript("/js/lib/"))
+        </script>
+
+            <!-- The following can use the WebJars Locator to avoid hard-coding the full path -->
+        <script data-main="/assets/js/home" src="/js/lib/requirejs/2.1.10/require.js"></script>
+    </head>
+    <body>
+
+    </body>
+</html>
