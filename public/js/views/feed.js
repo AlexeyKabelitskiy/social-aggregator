@@ -3,6 +3,11 @@ define(['require', 'jquery', 'backbonejs','underscorejs','../aggregator'
     function(require, $, Backbone, _, aggregator){
         aggregator.FeedView = Backbone.View.extend({
 
+            initialize: function() {
+                var thisView = this;
+                this.collection.reset([]);
+                this.collection.fetch({success: thisView.render, error: function() {console.log("Error fetching from "+thisView.collection.url)}})
+            },
 
             render: function() {
                 this.$el.empty();
@@ -12,6 +17,8 @@ define(['require', 'jquery', 'backbonejs','underscorejs','../aggregator'
                 });
                 return this;
             }
+
+
 
         });
 
