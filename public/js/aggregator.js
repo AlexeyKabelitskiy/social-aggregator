@@ -22,6 +22,11 @@ define(['jquery','underscorejs','backbonejs','bootstrap'], function($, _, Backbo
             });
 
             $.when.apply(null, deferreds).done(callback);
+        },
+
+        baseUrl: function() {
+            var url = window.location.href.replace(window.location.hash, '');
+            return url.replace(/\/*\/$/,'')
         }
 
     };
