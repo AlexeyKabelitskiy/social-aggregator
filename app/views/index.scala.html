@@ -9,9 +9,20 @@
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("css/main.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("img/favicon.png")">
 
-
         <script>
-        @Html(org.webjars.RequireJS.getSetupJavaScript("/js/lib/"))
+            var require = {
+                callback : function() {
+                    var momentPath = '@routes.WebJarAssets.at(WebJarAssets.locate("moment.js"))';
+
+                    requirejs.config({
+                        paths: { "moment": momentPath},
+                        shim: { "moment": { "exports": "moment" } }
+                    });
+                }
+            };
+        </script>
+        <script>
+        @Html(views.RequirePatch.setupJavaScript("/js/lib/"))
         </script>
 
             <!-- The following can use the WebJars Locator to avoid hard-coding the full path -->

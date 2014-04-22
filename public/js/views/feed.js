@@ -6,7 +6,12 @@ define(['require', 'jquery', 'backbonejs','underscorejs','../aggregator'
             initialize: function() {
                 var thisView = this;
                 this.collection.reset([]);
-                this.collection.fetch({success: thisView.render, error: function() {console.log("Error fetching from "+thisView.collection.url)}})
+                this.collection.fetch({
+                    success: function() {
+                        thisView.render();
+                    },
+                    error: function() {console.log("Error fetching from "+thisView.collection.url)}
+                })
             },
 
             render: function() {
@@ -24,7 +29,13 @@ define(['require', 'jquery', 'backbonejs','underscorejs','../aggregator'
 
         aggregator.FeedItemView = Backbone.View.extend({
             render: function() {
-                this.$el.html(this.template(this.model.attributes));
+                var icon = 'icon-blogger';
+                if(this.model.attributes.type === 'fb') {
+                    var icon = 'icon-facebook';
+                }
+
+                var model = _.extend({icon: icon}, this.model.attributes);
+                this.$el.html(this.template(model));
                 return this;
             }
         });

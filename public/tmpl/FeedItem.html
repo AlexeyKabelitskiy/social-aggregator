@@ -1,8 +1,8 @@
     <div id="feed-item-<%= id %>" class="row">
-        <div class="col-md-1"><i class="icon-large icon-blogger"></i></div>
-        <div class="col-md-2">10:00</div>
+        <div class="col-md-1"><i class="icon-large <%= icon %>"></i></div>
+        <div class="col-md-2"><%= timestamp %></div>
         <div class="col-md-5">
-            <div class="row"><a href="#">Вася Петров</a> прокомментил ваше <a href="#">фото</a></div>
-            <div class="row">И здесь они... Круто!</div>
+            <div class="row"><a href="#"><%= author %></a> <%= action %> <a href="#"><%= object %></a></div>
+            <div class="row"><%= comment %></div>
         </div>
     </div>
