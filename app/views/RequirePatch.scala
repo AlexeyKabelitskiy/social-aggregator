@@ -8,87 +8,66 @@ import scala.io.Source
   */
 object RequirePatch {
 
-  private lazy val requireConfig: String = createConfig
+  private var requireConfig: Option[String] = None
 
-  case class WebJarPrefix(url: String)
+  def setupJavaScript(webjarUrlPrefix: String): String = this.synchronized{ requireConfig match {
+    case Some(config) => config
+    case _ =>
+        val webjars = new WebJarAssetLocator().getWebJars
+        val webjarsVersionsString = new StringBuilder()
+        val webjarConfigsString = new StringBuilder()
 
-  implicit val defaultPrefix = WebJarPrefix("")
+        webjars.iterator.foreach { pair =>
+          // assemble the webjar versions string
+          webjarsVersionsString.append("'").append(pair._1).append("': '").append(pair._2).append("', ")
+          // assemble the webjar config string
+          webjarConfigsString.append("\n").append(getWebJarConfig(pair));
+        }
+        // remove the trailing ", "
+        webjarsVersionsString.delete(webjarsVersionsString.length - 2, webjarsVersionsString.length)
 
-  def createConfig: String = {
-
-    val webjarUrlPrefix = implicitly[WebJarPrefix]
-
-    val webjars = new WebJarAssetLocator().getWebJars
-
-    val webjarsVersionsString = new StringBuilder()
-
-    val webjarConfigsString = new StringBuilder()
-
-
-    webjars.iterator.foreach {
-      pair =>
-
-      // assemble the webjar versions string
-        webjarsVersionsString.append("'").append(pair._1).append("': '").append(pair._2).append("', ")
-
-        // assemble the webjar config string
-        webjarConfigsString.append("\n").append(getWebJarConfig(pair));
-    }
-
-    // remove the trailing ", "
-    webjarsVersionsString.delete(webjarsVersionsString.length - 2, webjarsVersionsString.length)
-
-
-    // assemble the JavaScript
-    // todo: could use a templating language but that would add a dependency
-
-    val javaScript = "var webjars = {\n" +
-      "    versions: { " + webjarsVersionsString.toString + " },\n" +
-      "    path: function(webjarid, path) {\n" +
-      "        return '" + webjarUrlPrefix + "' + webjarid + '/' + webjars.versions[webjarid] + '/' + path;\n" +
-      "    }\n" +
-      "};\n" +
-      "\n" +
-      "var previousRequireCallback;\n" +
-      "if(require && require.callback) {\n" +
-      "    previousRequireCallback = require.callback;\n" +
-      "}" +
-      "var require = {\n" +
-      "    callback: function() {\n" +
-      "        if(previousRequireCallback) previousRequireCallback();" +
-      "        // no-op webjars requirejs plugin loader for backwards compatibility\n" +
-      "        define('webjars', function () {\n" +
-      "            return { load: function (name, req, onload, config) { onload(); } }\n" +
-      "        });\n" +
-      "\n" +
-      "        // all of the webjar configs from their webjars-requirejs.js files\n" +
-      webjarConfigsString.toString +
-      "    }\n" +
-      "}"
-    javaScript
-  }
-
-  def setupJavaScript(webjarUrlPrefix: String) = {
-    implicit val prefix = WebJarPrefix(webjarUrlPrefix)
-    requireConfig
-  }
+        // assemble the JavaScript
+        // todo: could use a templating language but that would add a dependency
+        val javaScript = "var webjars = {\n" +
+          "    versions: { " + webjarsVersionsString.toString + " },\n" +
+          "    path: function(webjarid, path) {\n" +
+          "        return '" + webjarUrlPrefix + "' + webjarid + '/' + webjars.versions[webjarid] + '/' + path;\n" +
+          "    }\n" +
+          "};\n" +
+          "\n" +
+          "var previousRequireCallback;\n" +
+          "if(require && require.callback) {\n" +
+          "    previousRequireCallback = require.callback;\n" +
+          "}" +
+          "var require = {\n" +
+          "    callback: function() {\n" +
+          "        if(previousRequireCallback) previousRequireCallback();" +
+          "        // no-op webjars requirejs plugin loader for backwards compatibility\n" +
+          "        define('webjars', function () {\n" +
+          "            return { load: function (name, req, onload, config) { onload(); } }\n" +
+          "        });\n" +
+          "\n" +
+          "        // all of the webjar configs from their webjars-requirejs.js files\n" +
+          webjarConfigsString.toString +
+          "    }\n" +
+        "}"
+        requireConfig = Some(javaScript)
+        javaScript
+  }}
 
   def getWebJarConfig(webjar: (String, String)) = {
 
     val filename = WebJarAssetLocator.WEBJARS_PATH_PREFIX + "/" + webjar._1 + "/" + webjar._2 + "/" + "webjars-requirejs.js"
-    val inputStream = classOf[RequireJS].getClassLoader.getResourceAsStream(filename)
-    if (inputStream != null) {
+    val inputStream = asOption(classOf[RequireJS].getClassLoader.getResourceAsStream(filename))
+    inputStream.map {inputStream =>
 
       val config = "// webjar config for " + webjar._1 + "\n" +
-        withSource(Source.fromInputStream(inputStream)) {
-          s =>
+        withSource(Source.fromInputStream(inputStream)) { s =>
             s.getLines().mkString("\n")
         }
 
       config
-    }
-
-    ""
+    }.getOrElse("")
   }
 
   def withSource[T, S <: Source](source: S)(f: S => T): T = {
@@ -97,4 +76,5 @@ object RequirePatch {
     value
   }
 
+  def asOption[T](t:T) : Option[T] = if( t == null) None else Some(t)
 }
