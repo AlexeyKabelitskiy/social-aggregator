@@ -10,6 +10,7 @@
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("img/favicon.png")">
 
         <script>
+            //patch for non-AMD moment.js webjar setup
             var require = {
                 callback : function() {
                     var momentPath = '@views.ViewUtils.atWebJarsJS("moment.js")';
@@ -24,8 +25,7 @@
         @Html(views.RequirePatch.setupJavaScript("/js/lib/"))
         </script>
 
-            <!-- The following can use the WebJars Locator to avoid hard-coding the full path -->
-        <script data-main="@routes.Assets.at("js/home")" src="/js/lib/requirejs/2.1.10/require.js"></script>
+        <script data-main="@routes.Assets.at("js/home")" src="@views.ViewUtils.atWebJars("require.js")"></script>
     </head>
     <body>
 
