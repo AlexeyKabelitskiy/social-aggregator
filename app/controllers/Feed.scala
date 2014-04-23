@@ -11,14 +11,18 @@ import org.joda.time.DateTime
 
 import play.api.mvc._
 import play.api.libs.json.Json
+import utils.Logging
 
 /**
  * Feed controller
  */
-object Feed extends Controller{
+object Feed extends Controller with Logging {
+  override val loggerName = "controllers.Feed"
+
   def feed = Action{
     val count = Mock.g.nextInt(15)+1;
     val feed = for(i <- 1 to count) yield Mock.randomFeed
+    logger.debug(s"Generated $count feed items")
     Ok(Json.toJson(feed.sortWith((left: FeedItem, right: FeedItem) => left.time > right.time)))
   }
 }

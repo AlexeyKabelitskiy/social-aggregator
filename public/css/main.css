@@ -1,4 +1,39 @@
+/*
+*Common styles
+*/
+
+.pad-bottom-10 {
+    padding-bottom: 10px;
+}
+
 .new-notification{
 
 }
 
+/*
+ Footer
+*/
+
+footer a{
+    color: #adadad;
+}
+
+/*
+  Icons
+*/
+.social-icon {
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 28px;
+    line-height: 28px;
+    vertical-align: text-bottom;
+    width: 28px;
+}
+
+.icon-vk {
+    background-image: url("../img/vk.png");
+}
+
+.icon-fb {
+    background-image: url("../img/fb.png");
+}
