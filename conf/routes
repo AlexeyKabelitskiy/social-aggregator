@@ -3,11 +3,12 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
+GET        /                    controllers.Application.index
 
-GET     /js/lib/*file              controllers.WebJarAssets.at(file)
+GET        /js/lib/*file        controllers.WebJarAssets.at(file)
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET        /assets/*file        controllers.Assets.at(path="/public", file)
 
 # REST API
-GET  /api/feed                     controllers.Feed.feed
+GET        /api/feed            controllers.Application.feed
+GET        /api/notifications   controllers.Application.notifications

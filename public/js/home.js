@@ -1,5 +1,5 @@
 require(['jquery','underscorejs','backbonejs', './aggregator'
-        ,'bootstrap', './views/feed', './views/shell', './models/feed-model'
+        ,'bootstrap', './views/shell', './views/feed', './models/feed-model', './views/notifications', './models/notification-model'
         ], function($, _, Backbone, aggregator){
 
     aggregator.Router = Backbone.Router.extend({
@@ -13,23 +13,30 @@ require(['jquery','underscorejs','backbonejs', './aggregator'
 
         initialize: function () {
             aggregator.shellView = new aggregator.ShellView();
-            $('body').html(aggregator.shellView.render().el);
-            this.$content = $("#content");
+            $('body').append(aggregator.shellView.render().el);
+            this.$content = aggregator.shellView.content();
+            this.blockUI = { callbacks: aggregator.shellView.blockPageEvents };
         },
 
         feed: function () {
             // Since the home view never changes, we instantiate it and render it only once
             if (!aggregator.feedView) {
-                aggregator.feedView = new aggregator.FeedView({collection: new aggregator.Feed({})});
+                aggregator.feedView = new aggregator.FeedView({collection: new aggregator.Feed([],this.blockUI)});
                 aggregator.feedView.render();
             }
             this.$content.html(aggregator.feedView.el);
             aggregator.shellView.selectMenuItem('menu-feed');
+            aggregator.feedView.fetch();
         },
 
         notifications: function() {
-            this.$content.html('');
+            if (!aggregator.notifications) {
+                aggregator.notifications = new aggregator.NotificationsView({collection: new aggregator.Notifications([],this.blockUI)});
+                aggregator.notifications.render();
+            }
+            this.$content.html(aggregator.notifications.el);
             aggregator.shellView.selectMenuItem('menu-notifications');
+            aggregator.notifications.fetch();
         },
 
         options: function() {
@@ -39,7 +46,9 @@ require(['jquery','underscorejs','backbonejs', './aggregator'
     });
 
     $(document).ready(function () {
-        aggregator.loadTemplates(["Shell", "Feed", "FeedItem"],
+        aggregator.loadTemplates([
+     /* views */          "Shell", "Feed", "FeedItem", "Notifications", "Notification",
+     /* just templates */ "Alert"],
             function () {
                 aggregator.router = new aggregator.Router();
                 Backbone.history.start();

@@ -37,3 +37,38 @@ footer a{
 .icon-fb {
     background-image: url("../img/fb.png");
 }
+
+/*
+ Notification types
+*/
+
+.nf-error {
+    font-weight: bold;
+    color: #d9534f;
+}
+
+.nf-warning{
+    font-weight: bold;
+}
+
+.nf-debug{
+    font-style: italic;
+}
+
+/*
+    Alerts
+*/
+
+#errorBar {
+    position: absolute;
+    z-index: 999999;
+    width: 800px;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.alert {
+    position: relative;
+}

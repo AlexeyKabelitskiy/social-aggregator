@@ -15,9 +15,10 @@ all news sources polled at this time asynchronously (akka)
  
 **Features (~~Done~~):**
 - ~~play project~~
-- ~~UI framworks (backbone, requirejs,twitter, moment.js)~~
+- ~~UI frameworks (backbone, requirejs,twitter, moment.js)~~
 - ~~basic logging~~
-- notficatins (mongo, web sockets)
+- notifications (mongo, web sockets)
+- logging and troubleshooting support
 - authorization
 - user settings (mongo)
 - social server polling (akka, mongo, web socket)
@@ -27,3 +28,4 @@ all news sources polled at this time asynchronously (akka)
 - connect to fb
 - design plugin framework
 - connect to vk
+- load testing

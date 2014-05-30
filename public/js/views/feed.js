@@ -4,6 +4,9 @@ define(['require', 'jquery', 'backbonejs','underscorejs','../aggregator'
         aggregator.FeedView = Backbone.View.extend({
 
             initialize: function() {
+            },
+
+            fetch: function() {
                 var thisView = this;
                 this.collection.reset([]);
                 this.collection.fetch({
@@ -31,7 +34,7 @@ define(['require', 'jquery', 'backbonejs','underscorejs','../aggregator'
             render: function() {
                 var icon = 'icon-vk';
                 if(this.model.attributes.type === 'fb') {
-                    var icon = 'icon-fb';
+                    icon = 'icon-fb';
                 }
 
                 var model = _.extend({icon: icon}, this.model.attributes);

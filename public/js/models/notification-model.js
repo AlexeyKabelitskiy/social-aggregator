@@ -1,15 +1,15 @@
 define(['require', 'jquery', 'backbonejs', 'underscorejs', '../aggregator', 'moment','./page-collection-model'
        ],
     function (require, $, Backbone, _, aggregator, moment, BaseCollection) {
-    aggregator.FeedItem = Backbone.Model.extend({
+    aggregator.Notification = Backbone.Model.extend({
 
         initialize: function () {
-            this.attributes.timestamp = this.formatRelativeDate(this.attributes.time);
+            this.attributes.date = this.formatRelativeDate(this.attributes.timestamp);
         },
 
         getDate: function () {
-            if (this.attributes.time) {
-                return new Date(this.attributes.time)
+            if (this.attributes.timestamp) {
+                return new Date(this.attributes.timestamp)
             }
             return null;
         },
@@ -29,12 +29,11 @@ define(['require', 'jquery', 'backbonejs', 'underscorejs', '../aggregator', 'mom
         }
     });
 
-    aggregator.Feed = BaseCollection.extend({
-        model: aggregator.FeedItem,
-        url: aggregator.baseUrl() + '/feed',
+    aggregator.Notifications = BaseCollection.extend({
+        model: aggregator.Notification,
+        url: aggregator.baseUrl() + '/notifications',
         initialize: function(models, options){
             this.subscribe(options || {});
         }
-
     });
 });

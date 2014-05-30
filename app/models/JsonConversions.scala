@@ -17,4 +17,13 @@ object JsonConversions {
     )
   }
 
+  implicit val notificationsWrites = new Writes[Notification] {
+    override def writes(o : Notification): JsValue = Json.obj(
+      "id" -> Json.toJson(o.id),
+      "priority" -> Json.toJson(o.priority.value),
+      "timestamp" -> Json.toJson(o.timestamp.getMillis),
+      "message" -> Json.toJson(o.message)
+    )
+  }
+
 }
