@@ -14,6 +14,8 @@ import views.html.helper.input
 trait JsonResponder[T]{
   def response(value: T)(implicit wr: Writes[T]): Unit
   def close(): Unit
+  def done(): Unit
+  def error(msg: String, element: Input[JsValue])
 }
 
 class JsonWebSocketResponse[T] extends JsonResponder[T]{

@@ -1,6 +1,7 @@
-package models
+package social.models
 
 import play.api.libs.json.{Json, JsValue, Writes}
+import social.models.FeedItem
 
 /**
  */

@@ -1,4 +1,4 @@
-package models
+package social.models
 
 import org.joda.time.DateTime
 import play.api.libs.json.{Json, JsValue, Writes}

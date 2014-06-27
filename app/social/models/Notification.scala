@@ -1,4 +1,4 @@
-package models
+package social.models
 
 import org.joda.time.DateTime
 

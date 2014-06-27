@@ -1,0 +1,43 @@
+@(stamp: Long)(implicit request: RequestHeader)
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Social aggregator</title>
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.css"))'>
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap-theme.css"))'>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("css/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("img/favicon.png")">
+
+        <script>
+          var constants = {
+            generated: @stamp,
+            ws: {
+              notifications: "@social.controllers.routes.Application.newNotification(stamp).webSocketURL()"
+            }
+          }
+        </script>
+
+        <script>
+            //patch for non-AMD moment.js webjar setup
+            var require = {
+                callback : function() {
+                    var momentPath = '@social.utils.ViewUtils.atWebJarsJS("moment.js")';
+                    var blockUIPath = '@social.utils.ViewUtils.atWebJarsJS("jquery.blockUI.js")';
+                    requirejs.config({
+                        paths: { "moment": momentPath, "jquery-blockui": blockUIPath},
+                        shim: { "moment": { "exports": "moment" } }
+                    });
+                }
+            };
+        </script>
+        <script>
+        @Html(views.RequirePatch.setupJavaScript("/js/lib/"))
+        </script>
+
+        <script data-main="@routes.Assets.at("js/home")" src="@social.utils.ViewUtils.atWebJars("require.js")"></script>
+    </head>
+    <body>
+        <div id="errorBar"></div>
+    </body>
+</html>

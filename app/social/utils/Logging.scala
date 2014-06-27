@@ -1,4 +1,4 @@
-package utils
+package social.utils
 
 import play.api.Logger
 import org.slf4j.LoggerFactory

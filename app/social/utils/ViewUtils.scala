@@ -1,4 +1,4 @@
-package utils
+package social.utils
 
 import controllers._
 
