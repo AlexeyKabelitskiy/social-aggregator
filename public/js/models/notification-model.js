@@ -5,6 +5,7 @@ define(['require', 'jquery', 'backbonejs', 'underscorejs', '../aggregator', 'mom
 
         initialize: function () {
             this.attributes.date = this.formatRelativeDate(this.attributes.timestamp);
+            //this.idAttribute = "idAttributeName";
         },
 
         getDate: function () {

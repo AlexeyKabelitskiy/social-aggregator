@@ -3,12 +3,15 @@
 # ~~~~
 
 # Home page
-GET        /                    controllers.Application.index
+GET        /                         social.controllers.Application.index
 
-GET        /js/lib/*file        controllers.WebJarAssets.at(file)
+GET        /js/lib/*file             controllers.WebJarAssets.at(file)
 # Map static resources from the /public folder to the /assets URL path
-GET        /assets/*file        controllers.Assets.at(path="/public", file)
+GET        /assets/*file             controllers.Assets.at(path="/public", file)
 
 # REST API
-GET        /api/feed            controllers.Application.feed
-GET        /api/notifications   controllers.Application.notifications
+GET        /api/feed                 social.controllers.Application.feed
+GET        /api/notifications        social.controllers.Application.notifications
+
+#Web sockets
+GET        /api/notifications/check/:lastStamp  social.controllers.Application.newNotification(lastStamp: Long)

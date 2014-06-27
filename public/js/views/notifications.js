@@ -2,8 +2,26 @@ define(['require', 'jquery', 'backbonejs','underscorejs','../aggregator'
         ,'../models/notification-model'],
     function(require, $, Backbone, _, aggregator){
         aggregator.NotificationsView = Backbone.View.extend({
-
             initialize: function() {
+                this.websocket = new WebSocket(constants.ws.notifications);
+                var self = this;
+                this.websocket.onmessage = function(msg){
+                    console.info("WS onmessage");
+                    var obj = JSON.parse(msg.data);
+                    var n = new aggregator.Notification(obj);
+                    self.collection.add(n, {at: 0});
+                    self.$el.prepend(new aggregator.NotificationView({model: n, async:true}).render().el)
+                };
+                this.websocket.onopen = function(){
+                    console.info("WS onopen");
+                };
+                this.websocket.onerror = function(err) {
+                    console.error("WS err");
+                    console.error(err)
+                };
+                this.websocket.onclose = function () {
+                    console.info("WS onclose");
+                };
             },
 
             fetch: function() {
@@ -13,7 +31,9 @@ define(['require', 'jquery', 'backbonejs','underscorejs','../aggregator'
                     success: function() {
                         thisView.render();
                     },
-                    error: function() {console.log("Error fetching from "+thisView.collection.url)}
+                    error: function() {
+                        console.log("Error fetching from "+thisView.collection.url)
+                    }
                 })
             },
 
@@ -46,8 +66,11 @@ define(['require', 'jquery', 'backbonejs','underscorejs','../aggregator'
                     text = 'nf-error'
                 }
 
-
-                var model = _.extend({icon: icon, textDecoration: text}, this.model.attributes);
+                var arrived = "";
+                if(this.async) {
+                    arrived = " nf-highlight"
+                }
+                var model = _.extend({icon: icon, textDecoration: text+arrived}, this.model.attributes);
                 this.$el.html(this.template(model));
                 return this;
             }
