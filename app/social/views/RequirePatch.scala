@@ -1,14 +1,36 @@
-package views
+package social.views
 
-import org.webjars.{RequireJS, WebJarAssetLocator}
-import collection.JavaConversions._
 import scala.io.Source
 
+import collection.JavaConversions._
+import org.webjars.{RequireJS, WebJarAssetLocator}
+
 /**
-  */
+ * Patch for standard library org.webjars.RequireJS#getSetupJavaScript(java.lang.String). Allows preliminary
+ * callback object to setup webjar JS libraries which are not AMD-ready
+ * <pre>
+ *      &lt;script&gt;
+ *          //patch for non-AMD moment.js webjar setup
+ *          var require = {
+ *              callback : function() {
+ *                  var momentPath = '@social.utils.ViewUtils.atWebJarsJS("moment.js")';
+ *                  requirejs.config({
+ *                      paths: { "moment": momentPath},
+ *                      shim: { "moment": { "exports": "moment" } }
+ *                  });
+ *              }
+ *          };
+ *          @ Html(social.views.RequirePatch.setupJavaScript("/js/lib/"))
+ *      &lt;/script&gt;
+ * </pre>
+ */
 object RequirePatch {
 
   private var requireConfig: Option[String] = None
+
+  private case class WebJar(name: String, version: String) {
+    def this(p: (String, String)) = this(p._1, p._2)
+  }
 
   def setupJavaScript(webjarUrlPrefix: String): String = this.synchronized{ requireConfig match {
     case Some(config) => config
@@ -17,11 +39,11 @@ object RequirePatch {
         val webjarsVersionsString = new StringBuilder()
         val webjarConfigsString = new StringBuilder()
 
-        webjars.iterator.foreach { pair =>
+        webjars.iterator.map(new WebJar(_)).foreach { info =>
           // assemble the webjar versions string
-          webjarsVersionsString.append("'").append(pair._1).append("': '").append(pair._2).append("', ")
+          webjarsVersionsString.append("'").append(info.name).append("': '").append(info.version).append("', ")
           // assemble the webjar config string
-          webjarConfigsString.append("\n").append(getWebJarConfig(pair));
+          webjarConfigsString.append("\n").append(getWebJarConfig(info));
         }
         // remove the trailing ", "
         webjarsVersionsString.delete(webjarsVersionsString.length - 2, webjarsVersionsString.length)
@@ -55,19 +77,19 @@ object RequirePatch {
         javaScript
   }}
 
-  def getWebJarConfig(webjar: (String, String)) = {
+  def getWebJarConfig(webjar: WebJar) = {
 
-    val filename = WebJarAssetLocator.WEBJARS_PATH_PREFIX + "/" + webjar._1 + "/" + webjar._2 + "/" + "webjars-requirejs.js"
-    val inputStream = asOption(classOf[RequireJS].getClassLoader.getResourceAsStream(filename))
-    inputStream.map {inputStream =>
+    val filename = WebJarAssetLocator.WEBJARS_PATH_PREFIX + "/" + webjar.name + "/" + webjar.version + "/" + "webjars-requirejs.js"
+    val inputStream = Option(classOf[RequireJS].getClassLoader.getResourceAsStream(filename))
+    inputStream.fold(""){inputStream =>
 
-      val config = "// webjar config for " + webjar._1 + "\n" +
+      val config = "// webjar config for " + webjar.name + "\n" +
         withSource(Source.fromInputStream(inputStream)) { s =>
             s.getLines().mkString("\n")
         }
 
       config
-    }.getOrElse("")
+    }
   }
 
   def withSource[T, S <: Source](source: S)(f: S => T): T = {
@@ -76,5 +98,4 @@ object RequirePatch {
     value
   }
 
-  def asOption[T](t:T) : Option[T] = if( t == null) None else Some(t)
 }

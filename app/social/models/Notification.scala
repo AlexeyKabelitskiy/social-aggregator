@@ -1,24 +1,21 @@
 package social.models
 
 import org.joda.time.DateTime
+import social.utils.EnumLike
 
 /**
  * System notification, which is shown on UI
  */
 
-class Notification(val id: Int, val timestamp: DateTime, val priority: Priority, val message: String) {
+case class Notification(id: Int, timestamp: DateTime, priority: Priority, message: String)
 
+case class Priority (value: Int, name: String)
 
-}
-
-
-class Priority (val value: Int, val name: String)
-
-object Priority {  
-  object Debug extends Priority(1, "Debug")
-  object Info extends Priority(2, "Info")
-  object Warning extends Priority(3, "Warning")
-  object Error extends Priority(4, "Error")
+object Priority extends EnumLike[Priority]{
+  val Debug = Priority(1, "Debug")
+  val Info = Priority(2, "Info")
+  val Warning = Priority(3, "Warning")
+  val Error = Priority(4, "Error")
   
-  val values = Array(Debug, Info, Warning, Error)
+  override val values = Seq(Debug, Info, Warning, Error)
 }

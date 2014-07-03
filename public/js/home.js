@@ -1,6 +1,6 @@
-require(['jquery','underscorejs','backbonejs', './aggregator'
+require(['jquery','underscorejs','backbonejs', './aggregator', './wsmultiplexer'
         ,'bootstrap', './views/shell', './views/feed', './models/feed-model', './views/notifications', './models/notification-model'
-        ], function($, _, Backbone, aggregator){
+        ], function($, _, Backbone, aggregator, Multiplexer){
 
     aggregator.Router = Backbone.Router.extend({
 
@@ -12,6 +12,7 @@ require(['jquery','underscorejs','backbonejs', './aggregator'
         },
 
         initialize: function () {
+            aggregator.connection = new Multiplexer(constants.ws);
             aggregator.shellView = new aggregator.ShellView();
             $('body').append(aggregator.shellView.render().el);
             this.$content = aggregator.shellView.content();

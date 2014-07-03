@@ -3,25 +3,13 @@ define(['require', 'jquery', 'backbonejs','underscorejs','../aggregator'
     function(require, $, Backbone, _, aggregator){
         aggregator.NotificationsView = Backbone.View.extend({
             initialize: function() {
-                this.websocket = new WebSocket(constants.ws.notifications);
-                var self = this;
-                this.websocket.onmessage = function(msg){
-                    console.info("WS onmessage");
-                    var obj = JSON.parse(msg.data);
+
+                //Subscribe to new notifications
+                aggregator.connection.onmessage('Notification', $.proxy(function(obj){
                     var n = new aggregator.Notification(obj);
-                    self.collection.add(n, {at: 0});
-                    self.$el.prepend(new aggregator.NotificationView({model: n, async:true}).render().el)
-                };
-                this.websocket.onopen = function(){
-                    console.info("WS onopen");
-                };
-                this.websocket.onerror = function(err) {
-                    console.error("WS err");
-                    console.error(err)
-                };
-                this.websocket.onclose = function () {
-                    console.info("WS onclose");
-                };
+                    this.collection.add(n, {at: 0});
+                    this.$el.prepend(new aggregator.NotificationView({model: n, async:true}).render().el)
+                }, this));
             },
 
             fetch: function() {

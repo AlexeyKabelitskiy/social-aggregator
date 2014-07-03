@@ -12,9 +12,7 @@
         <script>
           var constants = {
             generated: @stamp,
-            ws: {
-              notifications: "@social.controllers.routes.Application.newNotification(stamp).webSocketURL()"
-            }
+            ws: "@social.controllers.routes.Application.socket().webSocketURL()"
           }
         </script>
 
@@ -32,7 +30,7 @@
             };
         </script>
         <script>
-        @Html(views.RequirePatch.setupJavaScript("/js/lib/"))
+        @Html(social.views.RequirePatch.setupJavaScript("/js/lib/"))
         </script>
 
         <script data-main="@routes.Assets.at("js/home")" src="@social.utils.ViewUtils.atWebJars("require.js")"></script>

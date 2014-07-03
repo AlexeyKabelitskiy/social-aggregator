@@ -13,5 +13,5 @@ GET        /assets/*file             controllers.Assets.at(path="/public", file)
 GET        /api/feed                 social.controllers.Application.feed
 GET        /api/notifications        social.controllers.Application.notifications
 
-#Web sockets
-GET        /api/notifications/check/:lastStamp  social.controllers.Application.newNotification(lastStamp: Long)
+#Web socket
+GET        /ws  social.controllers.Application.socket

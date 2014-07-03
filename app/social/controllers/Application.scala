@@ -1,20 +1,19 @@
 package social.controllers
 
 //implicits
-import social.models.JsonConversions._
-import com.github.nscala_time.time.Imports._
-
-import social.models._
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc._
-import scala.concurrent.Future
-import social.utils.Logging
 import java.util.Random
-import org.joda.time.{PeriodType, DateTime}
-import play.api.libs.iteratee.{Iteratee, Enumerator}
-import social.actors.NotificationSupervisor
-import play.api.Logger
-import social.models.{FB, VK}
+
+import scala.concurrent.Future
+
+import akka.actor.Props
+import com.github.nscala_time.time.Imports._
+import org.joda.time.DateTime
+import play.api.libs.json.Json
+import play.api.mvc._
+import social.actors.{NotificationWorker, WebSocketActor}
+import social.models._
+import social.models.JsonConversions._
+import social.utils.Logging
 
 object Application extends Controller with Logging {
 
@@ -58,18 +57,9 @@ object Application extends Controller with Logging {
 
   }}
 
-  def newNotification(lstamp: Long) = WebSocket[JsValue]{request => (theirIn, theirOut) => {
-    Logger.info("Notification websocket started")
-    val stamp = new DateTime(lstamp)
-    val (ourIn, ourOut) = NotificationSupervisor.websocket(
-      if( new Period(stamp, DateTime.now(), PeriodType.hours()).getHours > 24 )
-        DateTime.now()
-      else
-        stamp
-    )
-    theirIn |>>> ourIn
-    ourOut |>> theirOut
-  }}
+  def socket = WebSocketActor.websocket(Seq(
+    Props(classOf[NotificationWorker], DateTime.now()).withDispatcher("play.akka.actor.default-dispatcher")
+  ))
 
 }
 
@@ -84,12 +74,12 @@ object Mock {
   val objectType = Array("photo", "post", "page")
   val comments = Array("Cool!", "They are nice!", "Disgusting :(", "Great! That's exactly what I want", "Why do you think so?")
 
-  def random[T](content: Array[T]): T = {
+  def random[T](content: Seq[T]): T = {
     val idx = g.nextInt(content.length)
     content(idx)
   }
 
-  def randomType = random(Array(VK(),FB()))
+  def randomType = random(ItemType.values)
 
   def randomDate = DateTime.now - g.nextInt(48).hours
 
@@ -110,7 +100,7 @@ object Mock {
       lastId =lastId+1
       lastId
     }
-    new Notification(id,randomDate,random(Priority.values),random(comments))
+    Notification(id,randomDate,random(Priority.values),random(comments))
   }
 
 }

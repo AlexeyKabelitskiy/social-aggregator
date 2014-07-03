@@ -17,12 +17,14 @@ all news sources polled at this time asynchronously (akka)
 - ~~play project~~
 - ~~UI frameworks (backbone, requirejs,twitter, moment.js)~~
 - ~~basic logging~~
-- notifications (mongo, web sockets, akka)
+- notifications (web sockets, akka)
   - ~~server-side web socket~~
   - ~~basic ui notification~~
+  - ~~common component for server WS~~
+  - ~~single WS per app (UI events and mixed-content WS)~~
   - advanced UI (highlight new items with fading)
-  - common component for server WS
-  - single WS per app (UI events and mixed-content WS)
+  - mongo setup
+  - akka events hub
   - akka tests
 - logging and troubleshooting support
 - authorization
