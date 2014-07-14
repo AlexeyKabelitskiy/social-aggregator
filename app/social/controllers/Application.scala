@@ -25,7 +25,7 @@ object Application extends Controller with Logging {
       val ret = action.apply(request)
       val diff = 1000  - (System.currentTimeMillis() - start)
       if(diff > 0) {
-        val fail = Mock.randomLength(10) > 7
+        val fail = false //Mock.randomLength(10) > 7
         if(fail) {
           Thread.sleep(Mock.randomLong(diff))
           throw new IllegalArgumentException("Emulated server error")

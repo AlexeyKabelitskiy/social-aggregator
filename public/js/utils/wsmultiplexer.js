@@ -46,7 +46,7 @@ define([], function() {
     };
     Multiplexer.prototype.on = function(type, callback) {
         //Protect against message type, this should be another type of subscription
-        if(type !== message) {
+        if(type !== "message") {
             var arr = this.subscriptions[type] || [];
             arr.push(callback);
             this.subscriptions[type] = arr;

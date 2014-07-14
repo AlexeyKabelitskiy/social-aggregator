@@ -3,18 +3,25 @@ define(['require', 'jquery', 'backbonejs','underscorejs','../aggregator'
     function(require, $, Backbone, _, aggregator){
         aggregator.FeedView = Backbone.View.extend({
 
+            fetched: false,
+
             initialize: function() {
             },
 
             fetch: function() {
                 var thisView = this;
-                this.collection.reset([]);
-                this.collection.fetch({
-                    success: function() {
-                        thisView.render();
-                    },
-                    error: function() {console.log("Error fetching from "+thisView.collection.url)}
-                })
+                if(this.fetched !== true) {
+                    this.collection.reset([]);
+                    this.collection.fetch({
+                        success: function () {
+                            thisView.render();
+                            thisView.fetched = true;
+                        },
+                        error: function () {
+                            console.log("Error fetching from " + thisView.collection.url)
+                        }
+                    });
+                }
             },
 
             render: function() {

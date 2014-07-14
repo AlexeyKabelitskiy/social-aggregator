@@ -1,28 +1,52 @@
 define(['require', 'jquery', 'backbonejs','underscorejs','../aggregator'
-        ,'../models/notification-model'],
+        ,'../models/notification-model', 'jquery-color'],
     function(require, $, Backbone, _, aggregator){
         aggregator.NotificationsView = Backbone.View.extend({
-            initialize: function() {
+
+            selectors : {
+                menuItem:       'menu-notifications',
+                menuIcon:       'new-notification',
+                menuIconHash:   '#new-notification'
+            },
+
+            fetched: false,
+
+            initialize: function(options) {
+
+                options.hub.on("select", $.proxy(this.onselect, this));
 
                 //Subscribe to new notifications
                 aggregator.connection.onmessage('Notification', $.proxy(function(obj){
+                    obj = obj || {};
+                    obj.async = true;
                     var n = new aggregator.Notification(obj);
                     this.collection.add(n, {at: 0});
-                    this.$el.prepend(new aggregator.NotificationView({model: n, async:true}).render().el)
+                    this.$el.prepend(new aggregator.NotificationView({model: n}).render().el);
+
+                    if(this.selected === true) {
+                        this.animateNewNotifications();
+                    } else {
+                        $(this.selectors.menuIconHash).addClass("glyphicon-exclamation-sign");
+                    }
+
                 }, this));
+
             },
 
             fetch: function() {
                 var thisView = this;
-                this.collection.reset([]);
-                this.collection.fetch({
-                    success: function() {
-                        thisView.render();
-                    },
-                    error: function() {
-                        console.log("Error fetching from "+thisView.collection.url)
-                    }
-                })
+                if(this.fetched !== true) {
+                    this.collection.reset([]);
+                    this.collection.fetch({
+                        success: function () {
+                            thisView.render();
+                            thisView.fetched = true;
+                        },
+                        error: function () {
+                            console.log("Error fetching from " + thisView.collection.url)
+                        }
+                    })
+                }
             },
 
             render: function() {
@@ -32,9 +56,23 @@ define(['require', 'jquery', 'backbonejs','underscorejs','../aggregator'
                     self.$el.append(new aggregator.NotificationView({model: notif}).render().el);
                 });
                 return this;
+            },
+
+            onselect: function(item) {
+                if(item === this.selectors.menuItem) {
+                    this.selected = true;
+                    $(this.selectors.menuIconHash).removeClass("glyphicon-exclamation-sign");
+                    this.animateNewNotifications();
+                } else {
+                    this.selected = false;
+                }
+            },
+
+            animateNewNotifications: function () {
+                $(".nf-highlight").animate({backgroundColor: "#ffffff"}, 1000, function(){
+                    $(this).removeClass("nf-highlight")
+                })
             }
-
-
 
         });
 
@@ -55,7 +93,7 @@ define(['require', 'jquery', 'backbonejs','underscorejs','../aggregator'
                 }
 
                 var arrived = "";
-                if(this.async) {
+                if(this.model.attributes.async) {
                     arrived = " nf-highlight"
                 }
                 var model = _.extend({icon: icon, textDecoration: text+arrived}, this.model.attributes);

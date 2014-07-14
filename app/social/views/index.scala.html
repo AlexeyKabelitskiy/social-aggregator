@@ -22,8 +22,9 @@
                 callback : function() {
                     var momentPath = '@social.utils.ViewUtils.atWebJarsJS("moment.js")';
                     var blockUIPath = '@social.utils.ViewUtils.atWebJarsJS("jquery.blockUI.js")';
+                    var animateColorPath = '@routes.Assets.at("js/utils/jquery.color-2.1.2")';
                     requirejs.config({
-                        paths: { "moment": momentPath, "jquery-blockui": blockUIPath},
+                        paths: { "moment": momentPath, "jquery-blockui": blockUIPath, "jquery-color": animateColorPath},
                         shim: { "moment": { "exports": "moment" } }
                     });
                 }

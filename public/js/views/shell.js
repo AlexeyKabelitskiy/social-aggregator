@@ -6,16 +6,18 @@ define(['require', 'jquery', 'backbonejs','underscorejs','../aggregator',
 
         $errorBar : $("#errorBar"),
 
+        subscriptions: {},
+
         initialize: function () {
             var self = this;
             this.blockPageEvents = {
-                request: function(collection, xhr, options) {
+                request: function(/*collection, xhr, options*/) {
                     $.blockUI({message: "Loading..."});
                 },
-                sync: function(collection, resp, options) {
+                sync: function(/*collection, resp, options*/) {
                     $.unblockUI();
                 },
-                error: function(collection, resp, options) {
+                error: function(collection, resp/*, options*/) {
                     $.unblockUI();
                     self.addError("Error loading data. "+resp.status+": "+resp.statusText);
                 }
@@ -39,11 +41,26 @@ define(['require', 'jquery', 'backbonejs','underscorejs','../aggregator',
             if (menuItem) {
                 $('#' + menuItem).addClass('active');
             }
+            this.trigger("select", menuItem);
         },
 
         addError: function (message) {
             var newAlert = aggregator.templates.Alert({message: message});
             this.$errorBar.prepend(newAlert);
+            //trigger error
+        },
+
+        on: function(type, callback) {
+            var callbacks = this.subscriptions[type] || [];
+            callbacks.push(callback);
+            this.subscriptions[type] = callbacks;
+        },
+
+        trigger: function(type, data) {
+            var callbacks = this.subscriptions[type];
+            _.each(callbacks,function(e){
+                e.call(this, data)
+            })
         }
 
     });

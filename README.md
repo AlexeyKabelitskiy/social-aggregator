@@ -22,9 +22,10 @@ all news sources polled at this time asynchronously (akka)
   - ~~basic ui notification~~
   - ~~common component for server WS~~
   - ~~single WS per app (UI events and mixed-content WS)~~
-  - advanced UI (highlight new items with fading)
+  - ~~advanced UI (highlight new items with fading)~~
   - mongo setup
-  - akka events hub
+  - akka events hub (notification about new 'notification')
+    - fake source of notifications
   - akka tests
 - logging and troubleshooting support
 - authorization
@@ -37,3 +38,5 @@ all news sources polled at this time asynchronously (akka)
 - design plugin framework
 - connect to vk
 - load testing
+- ui modifications
+  - paging
