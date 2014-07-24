@@ -27,10 +27,10 @@ object WebSocketActor {
     //Get two answers from supervisor actor and setup Iteratee/Enumerator for WebSocket data
     implicit val timeout = Timeout(TIMEOUT)
     implicit val ec = Akka.system.dispatcher
-    for(
+    for {
       consumer <- (supervisor ? GetConsumer).mapTo[ActorRef]; //TODO Exception handling??
       enumerator <- (supervisor ? GetEvents).mapTo[Enumerator[JsValue]]
-    ) yield {
+    } yield {
       val iteratee = Iteratee.foreach[JsValue](consumer ! _).map(_ => Akka.system.stop(supervisor))
       theirIn |>>> iteratee
       enumerator |>> theirOut

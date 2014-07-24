@@ -12,7 +12,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "underscorejs" % "1.6.0-1",
   "org.webjars" % "backbonejs" % "1.1.2-1",
   "org.webjars" % "momentjs" % "2.6.0",
-  "com.github.nscala-time" %% "nscala-time" % "1.0.0"
+  "com.github.nscala-time" %% "nscala-time" % "1.0.0",
+  "org.reactivemongo" %% "reactivemongo" % "0.10.0"
 )
 
 playScalaSettings
